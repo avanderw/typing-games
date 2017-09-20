@@ -85,12 +85,12 @@ public class AnalyserTest {
         for (int idx = 0; idx < analyser.presented.length(); idx++) {
             TimeUnit.MILLISECONDS.sleep(50);
             analyser.keyDown(analyser.presented.charAt(idx));
-            TimeUnit.MILLISECONDS.sleep(10);
+            TimeUnit.MILLISECONDS.sleep(40);
             analyser.keyUp(analyser.presented.charAt(idx));
         }
 
-        assertEquals("Average press incorrect.", 10f, analyser.avgPress.getMean(), analyser.avgPress.getStandardDeviation());
-        assertEquals("Average key press incorrect.", 10f, analyser.avgKeyPress.get(' ').getMean(), analyser.avgKeyPress.get(' ').getStandardDeviation());
+        assertEquals("Average press incorrect.", 40f, analyser.avgPress.getMean(), analyser.avgPress.getStandardDeviation());
+        assertEquals("Average key press incorrect.", 40f, analyser.avgKeyPress.get(' ').getMean(), analyser.avgKeyPress.get(' ').getStandardDeviation());
         assertTrue(analyser.pressedKeys.isEmpty());
     }
 }
