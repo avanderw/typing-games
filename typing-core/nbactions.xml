@@ -8,4 +8,11 @@
                 <goal>clover:clover</goal>
             </goals>
         </action>
+        <action>
+            <actionName>CUSTOM-jasmine</actionName>
+            <displayName>jasmine</displayName>
+            <goals>
+                <goal>jasmine:bdd</goal>
+            </goals>
+        </action>
     </actions>

@@ -80,17 +80,17 @@ public class AnalyserTest {
     @Test
     public void testKeyUp() throws InterruptedException {
         System.out.println("testKeyPress");
-        Analyser analyser = new Analyser("The fiction that the magazine does publish is too often excerpted from novels or imminently forthcoming collections");
+        Analyser analyser = new Analyser("The fiction that the magazine does publish");
         analyser.start();
         for (int idx = 0; idx < analyser.presented.length(); idx++) {
             TimeUnit.MILLISECONDS.sleep(50);
             analyser.keyDown(analyser.presented.charAt(idx));
-            TimeUnit.MILLISECONDS.sleep(40);
+            TimeUnit.MILLISECONDS.sleep(20);
             analyser.keyUp(analyser.presented.charAt(idx));
         }
 
-        assertEquals("Average press incorrect.", 40f, analyser.avgPress.getMean(), analyser.avgPress.getStandardDeviation());
-        assertEquals("Average key press incorrect.", 40f, analyser.avgKeyPress.get(' ').getMean(), analyser.avgKeyPress.get(' ').getStandardDeviation());
+        assertEquals("Average press incorrect.", 31f, analyser.avgPress.getMean(), analyser.avgPress.getStandardDeviation());
+        assertEquals("Average key press incorrect.", 31f, analyser.avgKeyPress.get(' ').getMean(), analyser.avgKeyPress.get(' ').getStandardDeviation());
         assertTrue(analyser.pressedKeys.isEmpty());
     }
 }
