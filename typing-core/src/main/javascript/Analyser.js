@@ -17,15 +17,15 @@ Analyser.prototype = {
     },
     keyDown: function (c) {
         if (!this.pressedKeys.isEmpty()) {
-            keyUp(this.pressedKeys.keySet().iterator().next());
+            this.keyUp(this.pressedKeys.keySet().pop());
         }
         this.pressedKeys.put(c, new Date().getTime());
-        if (this.transcribed.length() === this.presented.length()) {
-            throw new IllegalStateException("Analyser complete");
+        if (this.transcribed.length === this.presented.length) {
+            throw "Analyser complete";
         }
 
         var timeToLast = new Date().getTime() - this.last;
-        if (this.presented.charAt(this.transcribed.length()) === c) {
+        if (this.presented.charAt(this.transcribed.length) === c) {
             this.transcribed += c; //http://www.keybr.com/practice
 
             if (!this.avgKeyDelta.containsKey(c)) {
@@ -34,16 +34,16 @@ Analyser.prototype = {
 
             this.avgDelta.addValue(timeToLast);
             this.avgKeyDelta.get(c).addValue(timeToLast);
-            if (this.transcribed.length() === this.presented.length()) {
+            if (this.transcribed.length === this.presented.length) {
                 this.pressedKeys.clear();
             }
-        } else if (this.errorIdx !== this.transcribed.length()) {
-            if (!this.keyErrorFreq.containsKey(this.presented.charAt(this.transcribed.length()))) {
-                this.keyErrorFreq.put(this.presented.charAt(this.transcribed.length()), new Frequency());
+        } else if (this.errorIdx !== this.transcribed.length) {
+            if (!this.keyErrorFreq.containsKey(this.presented.charAt(this.transcribed.length))) {
+                this.keyErrorFreq.put(this.presented.charAt(this.transcribed.length), new Frequency());
             }
 
-            this.keyErrorFreq.get(this.presented.charAt(this.transcribed.length())).addValue(c);
-            this.errorIdx = this.transcribed.length();
+            this.keyErrorFreq.get(this.presented.charAt(this.transcribed.length)).addValue(c);
+            this.errorIdx = this.transcribed.length;
         }
 
         this.last = new Date().getTime();
@@ -68,8 +68,12 @@ Analyser.prototype = {
         return cps() * 60 / this.CHAR_PER_WORD;
     },
     acc: function () {
-        var totalErr = this.keyErrorFreq.entrySet().stream().mapToLong(entry => {entry.getValue().getSumFreq()}).sum();
-        return 1 - totalErr / this.transcribed.length();
+        var totalErr = this.keyErrorFreq.entrySet().map(function (entry) {
+            return entry.value.getSumFreq();
+        }).reduce(function (prevFreq, freq) {
+            return prevFreq + freq;
+        }, 0);
+        return 1 - totalErr / this.transcribed.length;
     }
 };
         
