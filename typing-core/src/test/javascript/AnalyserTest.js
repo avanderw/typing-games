@@ -47,4 +47,11 @@ describe("An Analyser", function () {
         analyser.keyDown('a');
         expect(analyser.keyDown).toThrow("Analyser complete");
     });
+    
+    it("ignores certain keys", function(){
+        var analyser = new Analyser("The quick");
+        analyser.ignore('T', 16, 17, 18); // backspace, shift, control, alt
+        analyser.keyDown('T');
+        expect(analyser.transcribed).toBe("");
+    });
 });

@@ -1,0 +1,45 @@
+<html>
+
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="../../main/javascript/HashMap.js" type="text/javascript"></script>
+        <script src="../../main/javascript/DescriptiveStatistics.js" type="text/javascript"></script>
+        <script src="../../main/javascript/Frequency.js" type="text/javascript"></script>
+        <script src="../../main/javascript/Analyser.js" type="text/javascript"></script>
+        <script src="https://unpkg.com/vue"></script>
+    </head>
+
+    <body>
+        <div id="stats">
+            {{analyser.presented}}<br/>
+            {{analyser.transcribed}}<br>
+            {{analyser.wpm()}}<br/>
+            {{analyser.acc()}}<br/>
+            {{analyser.avgDelta.getMean()}} + {{analyser.avgDelta.getStandardDeviation()}}
+        </div>
+        <script>
+    var analyser = new Analyser("The quick brown fox jumps over the lazy dog!");
+    analyser.ignore('Backspace', 'Shift', 'Control', 'Alt'); // backspace, shift, control, alt
+    var stats = new Vue({
+        el: '#stats',
+        data: {
+            analyser: analyser
+        }
+    });
+
+    (function () {
+        analyser.start();
+        document.addEventListener("keydown", function (e) {
+            analyser.keyDown(e.key);
+        });
+        document.addEventListener("keyup", function (e) {
+            analyser.keyUp(e.key);
+        });
+    })();
+
+        </script>
+    </body>
+
+</html>

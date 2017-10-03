@@ -1,6 +1,9 @@
 package net.avdw.typing;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.apache.commons.math3.stat.Frequency;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -17,6 +20,7 @@ public class Analyser {
     final Map<Character, DescriptiveStatistics> avgKeyPress;
     final Map<Character, Frequency> keyErrorFreq;
     final Map<Character, Long> pressedKeys;
+    final List<Character> ignore;
 
     private long last;
     private int errorIdx;
@@ -31,9 +35,14 @@ public class Analyser {
         avgKeyPress = new HashMap();
         keyErrorFreq = new HashMap();
         pressedKeys = new HashMap();
+        ignore = new ArrayList();
 
         errorIdx = -1;
 
+    }
+
+    void ignore(Character... chars) {
+        ignore.addAll(Arrays.asList(chars));
     }
 
     void start() {
@@ -41,9 +50,13 @@ public class Analyser {
     }
 
     void keyDown(char c) {
+        if (ignore.contains(c)) {
+            return;
+        }
         if (!pressedKeys.isEmpty()) {
             keyUp(pressedKeys.keySet().iterator().next());
         }
+
         pressedKeys.put(c, System.currentTimeMillis());
 
         if (transcribed.length() == presented.length()) {
@@ -61,7 +74,7 @@ public class Analyser {
 
             avgDelta.addValue(timeToLast);
             avgKeyDelta.get(c).addValue(timeToLast);
-            
+
             if (transcribed.length() == presented.length()) {
                 pressedKeys.clear();
             }
@@ -78,15 +91,18 @@ public class Analyser {
     }
 
     void keyUp(Character c) {
+        if (ignore.contains(c)) {
+            return;
+        }
         if (!pressedKeys.containsKey(c)) {
             return;
         }
-        
+
         long pressDelta = System.currentTimeMillis() - pressedKeys.remove(c);
         if (!avgKeyPress.containsKey(c)) {
             avgKeyPress.put(c, new DescriptiveStatistics());
         }
-        
+
         avgPress.addValue(pressDelta);
         avgKeyPress.get(c).addValue(pressDelta);
     }

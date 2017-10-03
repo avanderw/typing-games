@@ -9,7 +9,7 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 
-@Ignore("Working on javascript for now")
+//@Ignore("Working on javascript for now")
 public class AnalyserTest {
 
     @Rule
@@ -93,4 +93,18 @@ public class AnalyserTest {
         assertEquals("Average key press incorrect.", 31f, analyser.avgKeyPress.get(' ').getMean(), analyser.avgKeyPress.get(' ').getStandardDeviation());
         assertTrue(analyser.pressedKeys.isEmpty());
     }
+    
+    @Test
+    public void testIgnore() {
+        System.out.println("testIgnore");
+        Analyser analyser = new Analyser("The fiction");
+        // backspace, shift, control, alt
+        analyser.ignore('e','f');
+        analyser.start();
+        analyser.keyDown('T');
+        analyser.keyDown('h');
+        analyser.keyDown('e');
+        assertEquals("Th", analyser.transcribed);
+    }
+    
 }

@@ -8,6 +8,8 @@ function Analyser(presented) {
     this.keyErrorFreq = new HashMap();
     this.pressedKeys = new HashMap();
     this.errorIdx = -1;
+    this.CHAR_PER_WORD = 5;
+    this.ignoreList = [];
 }
 
 Analyser.prototype = {
@@ -15,7 +17,13 @@ Analyser.prototype = {
     start: function () {
         this.last = new Date().getTime();
     },
+    ignore: function() {
+        this.ignoreList = this.ignoreList.concat([].slice.call(arguments));
+    },
     keyDown: function (c) {
+        if (this.ignoreList.includes(c)) {
+            return;
+        }
         if (!this.pressedKeys.isEmpty()) {
             this.keyUp(this.pressedKeys.keySet().pop());
         }
@@ -49,6 +57,9 @@ Analyser.prototype = {
         this.last = new Date().getTime();
     },
     keyUp: function (c) {
+        if (this.ignoreList.includes(c)) {
+            return;
+        }
         if (!this.pressedKeys.containsKey(c)) {
             return;
         }
@@ -65,7 +76,7 @@ Analyser.prototype = {
         return 1000 / this.avgDelta.getMean();
     },
     wpm: function () {
-        return cps() * 60 / this.CHAR_PER_WORD;
+        return this.cps() * 60 / this.CHAR_PER_WORD;
     },
     acc: function () {
         var totalErr = this.keyErrorFreq.entrySet().map(function (entry) {
@@ -73,7 +84,8 @@ Analyser.prototype = {
         }).reduce(function (prevFreq, freq) {
             return prevFreq + freq;
         }, 0);
-        return 1 - totalErr / this.transcribed.length;
+        console.log(totalErr);
+        return 1 - (totalErr / this.transcribed.length);
     }
 };
         
