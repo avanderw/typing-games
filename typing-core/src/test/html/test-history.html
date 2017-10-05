@@ -1,0 +1,41 @@
+<html>
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Droid+Serif:700" rel="stylesheet"> 
+    <style>
+        div.graph {
+            display: inline-block;
+            padding: 7px;
+            border: 1px solid #ccc;
+            background: /* On "top" */
+            repeating-linear-gradient( 135deg, transparent, transparent 20px, rgba(0,0,0,.7) 21px, rgba(255,255,255,0.1) 22px, rgba(255,255,255, 0.4) 24px), /* on "bottom" */
+            linear-gradient( to bottom, #485563, #29323c);
+        }
+        
+        span.value {
+            font-family: 'Droid Serif', serif;
+            font-size: 43px;
+            color: transparent;
+            text-shadow: 0px 0px 1px rgba(240, 255, 255, 1), -2px -2px 1px rgba(0, 0, 0, .9);
+            -webkit-text-stroke: 1px black;
+            -webkit-background-clip: text;
+        }
+        
+        span.delta {
+            font-family: 'Droid Serif', serif;
+            font-size: 33px;
+            color: lawngreen;
+            text-shadow: 2px 2px 5px #000;
+            -webkit-text-stroke: 1px black;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="graph">
+        <span class='value'>93.2</span>
+        <span class='delta'>+4.3</span>
+    </div>
+</body>
+
+</html>

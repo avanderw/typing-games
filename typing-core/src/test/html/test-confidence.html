@@ -1,0 +1,128 @@
+<html>
+    <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Droid+Serif:700" rel="stylesheet">
+    <style>
+        div.graph {
+            display: inline-block;
+            padding: 7px;
+            border: 1px solid #ccc;
+            background: /* On "top" */
+            repeating-linear-gradient( 135deg, transparent, transparent 20px, rgba(0, 0, 0, .7) 21px, rgba(255, 255, 255, 0.1) 22px, rgba(255, 255, 255, 0.4) 24px), /* on "bottom" */
+            linear-gradient( to bottom, #485563, #29323c);
+        }
+        
+        span.value {
+            font-family: 'Droid Serif', serif;
+            font-size: 43px;
+            color: transparent;
+            text-shadow: 0px 0px 1px rgba(240, 255, 255, 1), -2px -2px 1px rgba(0, 0, 0, .9);
+            -webkit-text-stroke: 1px black;
+            -webkit-background-clip: text;
+        }
+        
+        span.delta {
+            font-family: 'Droid Serif', serif;
+            font-size: 33px;
+            color: lawngreen;
+            text-shadow: 2px 2px 5px #000;
+            -webkit-text-stroke: 1px black;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="graph">
+        <div id="chart"></div>
+        <span class='value'>93.2</span>
+        <span class='delta'>+4.3</span>
+    </div>
+    <script>
+        google.charts.load('current', {
+            'packages': ['corechart']
+        });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('number', 't');
+            data.addColumn('number', 'wpm');
+            data.addColumn({
+                id: 'low',
+                type: 'number',
+                role: 'interval',
+                label: 'low'
+            });
+            data.addColumn({
+                id: 'high',
+                type: 'number',
+                role: 'interval'
+            });
+
+            data.addRows([
+                [1, 86, 84, 88],
+                [2, 76, 70, 79],
+                [3, 54, 44, 64],
+                [4, 67, 63, 71],
+                [5, 86, 84, 88],
+                [6, 76, 70, 79],
+                [8, 67, 63, 71],
+                [9, 86, 84, 88],
+                [10, 76, 70, 79],
+                [12, 67, 63, 71],
+                [13, 87, 85, 89]
+            ]);
+
+            var options = {
+                title: 'WPM',
+                titleTextStyle: {
+                    color: '#000000' , 
+                    fontName: 'Droid Serif', 
+                    fontSize: 30 , 
+                    bold: true, 
+                    italic: false
+                },
+                legend: "none",
+                curveType: 'function',
+                lineWidth: 2,
+                colors: ['#333'],
+                interval: {
+                    low: {
+                        style: 'area',
+                        color: '#cccccc',
+                        fillOpacity: .5
+
+                    },
+                    high: {
+                        style: 'area',
+                        color: '#ffffff',
+                        fillOpacity: .9
+                    }
+
+                },
+                width: 900,
+                height: 300,
+                backgroundColor: {
+                    fill: '#ccc',
+                    fillOpacity: 0.15
+                },
+                hAxis: {
+                    baselineColor: 'transparent',
+                    ticks: []
+                },
+                vAxis: {
+                    baselineColor: 'transparent',
+                    ticks: [50, 60, 70, 80, 90],
+                    textStyle: {
+                        fontSize: 20,
+                        color: '#ccc'
+                    }
+                }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('chart'));
+            chart.draw(data, options);
+        }
+    </script>
+</body>
+</html>

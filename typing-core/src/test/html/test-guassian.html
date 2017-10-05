@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+
+<head>
+    <title>TODO supply a title</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+
+<body>
+    <div id="graph"></div>
+    <script>
+        function drawGuassian(mu, sigma, div) {
+            let chartData = new google.visualization.DataTable();
+            chartData.addColumn("number", "X Value");
+            chartData.addColumn("number", "Y Value");
+
+            chartData.addRows(generateData(mu, sigma));
+
+            let options = {
+                legend: "none",
+                hAxis: {
+                    baseline: mu,
+                    baselineColor: 'transparent',
+                    ticks: [mu - 2 * sigma, mu - sigma, mu, mu + sigma, mu + 2 * sigma],
+                    viewWindow: {
+                        min: mu - 3 * sigma - sigma / 10,
+                        max: mu + 3 * sigma + sigma / 10
+                    }
+                },
+                vAxis: {
+                    gridlines: {
+                        count: 0
+                    },
+                    baselineColor: 'transparent'
+                }
+            };
+
+            let chart = new google.visualization.AreaChart(document.getElementById(div));
+            chart.draw(chartData, options);
+        }
+
+        function generateData(mean, stddev) {
+            let delta = stddev / 10;
+            let xMin = mean - 3 * stddev - delta;
+            let xMax = mean + 3 * stddev + delta;
+
+            let data = new Array(2);
+            let idx = 0;
+            for (let i = xMin; i <= xMax; i += delta) {
+                data[idx] = new Array(2);
+                data[idx][0] = i;
+                data[idx][1] = jStat.normal.pdf(i, mean, stddev);
+                idx++;
+            }
+
+            return data;
+        }
+
+        google.charts.load('current', {
+            'packages': ['corechart']
+        });
+        google.charts.setOnLoadCallback(function() {});
+
+    </script>
+</body>
+
+</html>

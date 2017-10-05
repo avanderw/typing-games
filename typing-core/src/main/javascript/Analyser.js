@@ -1,5 +1,6 @@
 function Analyser(presented) {
     this.presented = presented;
+
     this.transcribed = "";
     this.avgDelta = new DescriptiveStatistics();
     this.avgPress = new DescriptiveStatistics();
@@ -10,6 +11,10 @@ function Analyser(presented) {
     this.errorIdx = -1;
     this.CHAR_PER_WORD = 5;
     this.ignoreList = [];
+
+    this.cps = 0;
+    this.wpm = 0;
+    this.acc = 0;
 }
 
 Analyser.prototype = {
@@ -17,7 +22,7 @@ Analyser.prototype = {
     start: function () {
         this.last = new Date().getTime();
     },
-    ignore: function() {
+    ignore: function () {
         this.ignoreList = this.ignoreList.concat([].slice.call(arguments));
     },
     keyDown: function (c) {
@@ -55,6 +60,7 @@ Analyser.prototype = {
         }
 
         this.last = new Date().getTime();
+        this.update();
     },
     keyUp: function (c) {
         if (this.ignoreList.includes(c)) {
@@ -72,20 +78,16 @@ Analyser.prototype = {
         this.avgPress.addValue(pressDelta);
         this.avgKeyPress.get(c).addValue(pressDelta);
     },
-    cps: function () {
-        return 1000 / this.avgDelta.getMean();
-    },
-    wpm: function () {
-        return this.cps() * 60 / this.CHAR_PER_WORD;
-    },
-    acc: function () {
+    update: function () {
+        this.cps = 1000 / this.avgDelta.getMean();
+        this.wpm = this.cps * 60 / this.CHAR_PER_WORD;
         var totalErr = this.keyErrorFreq.entrySet().map(function (entry) {
             return entry.value.getSumFreq();
         }).reduce(function (prevFreq, freq) {
             return prevFreq + freq;
         }, 0);
-        console.log(totalErr);
-        return 1 - (totalErr / this.transcribed.length);
+
+        this.acc = 1 - (totalErr / this.transcribed.length);
     }
 };
         

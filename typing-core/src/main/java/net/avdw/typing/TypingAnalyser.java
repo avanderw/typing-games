@@ -8,10 +8,14 @@ import java.util.Map;
 import org.apache.commons.math3.stat.Frequency;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
-public class Analyser {
+class TypingAnalyser {
 
     String presented;
     String transcribed;
+
+    double cps;
+    double wpm;
+    double acc;
 
     final int CHAR_PER_WORD = 5;
     final DescriptiveStatistics avgDelta;
@@ -25,7 +29,7 @@ public class Analyser {
     private long last;
     private int errorIdx;
 
-    Analyser(String presented) {
+    public TypingAnalyser(String presented) {
         this.presented = presented;
         transcribed = "";
 
@@ -41,15 +45,15 @@ public class Analyser {
 
     }
 
-    void ignore(Character... chars) {
+    public void ignore(Character... chars) {
         ignore.addAll(Arrays.asList(chars));
     }
 
-    void start() {
+    public void start() {
         last = System.currentTimeMillis();
     }
 
-    void keyDown(char c) {
+    public void keyDown(Character c) {
         if (ignore.contains(c)) {
             return;
         }
@@ -88,9 +92,14 @@ public class Analyser {
         }
 
         last = System.currentTimeMillis();
+        
+        cps = 1000d / avgDelta.getMean();
+        wpm = cps * 60 / CHAR_PER_WORD;
+        double totalErr = keyErrorFreq.entrySet().stream().mapToLong(entry -> entry.getValue().getSumFreq()).sum();
+        acc = 1 - totalErr / transcribed.length();
     }
 
-    void keyUp(Character c) {
+    public void keyUp(Character c) {
         if (ignore.contains(c)) {
             return;
         }
@@ -105,18 +114,5 @@ public class Analyser {
 
         avgPress.addValue(pressDelta);
         avgKeyPress.get(c).addValue(pressDelta);
-    }
-
-    double cps() {
-        return 1000d / avgDelta.getMean();
-    }
-
-    double wpm() {
-        return cps() * 60 / CHAR_PER_WORD;
-    }
-
-    double acc() {
-        double totalErr = keyErrorFreq.entrySet().stream().mapToLong(entry -> entry.getValue().getSumFreq()).sum();
-        return 1 - totalErr / transcribed.length();
     }
 }

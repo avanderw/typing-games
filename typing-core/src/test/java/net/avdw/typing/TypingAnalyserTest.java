@@ -10,7 +10,7 @@ import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 
 //@Ignore("Working on javascript for now")
-public class AnalyserTest {
+public class TypingAnalyserTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -18,7 +18,7 @@ public class AnalyserTest {
     @Test
     public void testOneWps() throws InterruptedException {
         System.out.println("testOneWps");
-        Analyser analyser = new Analyser("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        TypingAnalyser analyser = new TypingAnalyser("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         analyser.start();
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
@@ -37,13 +37,13 @@ public class AnalyserTest {
         TimeUnit.SECONDS.sleep(delay);
         executor.shutdownNow();
 
-        assertEquals("Expecting 60 wpm", 60f, Math.round(analyser.wpm()), 1f);
+        assertEquals("Expecting 60 wpm", 60f, Math.round(analyser.wpm), 1f);
     }
 
     @Test(expected = IllegalStateException.class)
     public void testCompletedAnalyser() {
         System.out.println("testCompletedAnalyser");
-        Analyser analyser = new Analyser("a");
+        TypingAnalyser analyser = new TypingAnalyser("a");
         analyser.start();
         analyser.keyDown('a');
         analyser.keyDown('a');
@@ -52,7 +52,7 @@ public class AnalyserTest {
     @Test
     public void testErrors() {
         System.out.println("testErrors");
-        Analyser analyser = new Analyser("The quick brown fox jumped over the brown dog!");
+        TypingAnalyser analyser = new TypingAnalyser("The quick brown fox jumped over the brown dog!");
         analyser.start();
         String transcribed = "The quick fbrown fox jumped over the jbrown dobdg!";
         for (int idx = 0; idx < transcribed.length(); idx++) {
@@ -66,21 +66,21 @@ public class AnalyserTest {
     @Test
     public void testAccuracy() {
         System.out.println("testAccuracy");
-        Analyser analyser = new Analyser("The quick brown fox jumped over the brown dog!");
+        TypingAnalyser analyser = new TypingAnalyser("The quick brown fox jumped over the brown dog!");
         analyser.start();
         String transcribed = "The quick fbrown fox jumped over the jbrown dobdg!";
         for (int idx = 0; idx < transcribed.length(); idx++) {
             analyser.keyDown(transcribed.charAt(idx));
         }
 
-        assertEquals("Error rate is 93%.", .934, analyser.acc(), 0.001);
+        assertEquals("Error rate is 93%.", .934, analyser.acc, 0.001);
         assertTrue(analyser.pressedKeys.isEmpty());
     }
 
     @Test
     public void testKeyUp() throws InterruptedException {
         System.out.println("testKeyPress");
-        Analyser analyser = new Analyser("The fiction that the magazine does publish");
+        TypingAnalyser analyser = new TypingAnalyser("The fiction that the magazine does publish");
         analyser.start();
         for (int idx = 0; idx < analyser.presented.length(); idx++) {
             TimeUnit.MILLISECONDS.sleep(50);
@@ -97,7 +97,7 @@ public class AnalyserTest {
     @Test
     public void testIgnore() {
         System.out.println("testIgnore");
-        Analyser analyser = new Analyser("The fiction");
+        TypingAnalyser analyser = new TypingAnalyser("The fiction");
         // backspace, shift, control, alt
         analyser.ignore('e','f');
         analyser.start();
