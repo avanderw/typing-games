@@ -10,6 +10,7 @@
     </properties>
   <modules>
     <module>typing-game-base-client</module>
-    <module>typing-games-server</module>
+    <module>typing-core</module>
+    <module>typing-server</module>
   </modules>
 </project>
