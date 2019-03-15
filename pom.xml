@@ -12,5 +12,6 @@
     <module>typing-game-base-client</module>
     <module>typing-core</module>
     <module>typing-server</module>
+      <module>typing-desktop</module>
   </modules>
 </project>
